@@ -1,0 +1,1 @@
+CREATE DATABASE `directory_aziendale`;
