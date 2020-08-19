@@ -1,6 +1,10 @@
--- Controlla la validità del formato dei valori inseriti nella colonna EmailPersonale
+-- -- Eseguono controlli definiti nella stored procedure DIPENDENTE_before_insert_update prima di permettere un insert
 
-CREATE DEFINER = CURRENT_USER TRIGGER `directory_aziendale`.`DIPENDENTE_BEFORE_INSERT` BEFORE INSERT ON `DIPENDENTE` FOR EACH ROW
+CREATE
+DEFINER=`root`@`localhost`
+TRIGGER `directory_aziendale`.`DIPENDENTE_BEFORE_INSERT`
+BEFORE INSERT ON `directory_aziendale`.`DIPENDENTE`
+FOR EACH ROW
 BEGIN
-	call directory_aziendale.check_email(new.EmailPersonale);
+	call directory_aziendale.DIPENDENTE_before_insert_update(new.EmailPersonale, new.NumTelefonicoEsternoPostazione, new.CF, new.DataUltimoTrasferimento);
 END
