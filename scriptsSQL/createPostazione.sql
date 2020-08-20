@@ -1,11 +1,10 @@
 CREATE TABLE IF NOT EXISTS `directory_aziendale`.`POSTAZIONE` (
   `NumTelefonicoEsterno` VARCHAR(45) NOT NULL,
   `NumTelefonicoInterno` VARCHAR(45) NOT NULL,
-  `EmailUfficio` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`NumTelefonicoEsterno`),
-  UNIQUE INDEX `NumTelefonicoPostazione_UNIQUE` (`NumTelefonicoEsterno` ASC) VISIBLE,
-  UNIQUE INDEX `EmailUfficio_UNIQUE` (`EmailUfficio` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+  NumUfficio int unsigned not null ,
+  NumPiano int unsigned not null ,
+  IndirizzoEdificio varchar(45),
+  PRIMARY KEY (`NumTelefonicoEsterno`)
+  );
 alter table directory_aziendale.POSTAZIONE
-	add constraint NumTelInt_Uff_UNIQUE unique (NumTelefonicoInterno, EmailUfficio);
+	add constraint NumTelInt_Uff_UNIQUE unique (NumTelefonicoInterno, NumUfficio, NumPiano, IndirizzoEdificio);
