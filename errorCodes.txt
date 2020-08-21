@@ -1,3 +1,4 @@
 45001 - ERROR: invalid Email format, a compliant one is username@hostname.domain
-45003 - ERROR: Employer was not registered as TRASFERITO_A to designed postation.
+45002 - ERROR: NumTelefonicoEsternoPostazione and DataUltimoTrasferimento must be both null or both not null
+45003 - ERROR: Can't find a transfer of this employer in TRASFERITO_A to designed postation with provided date.
 45004 - ERROR: Un dipendente non può essere trasferito a una postazione dove è stato già trasferito meno di tre anni fa
