@@ -1,4 +1,3 @@
 45001 - ERROR: invalid Email format, a compliant one is username@hostname.domain
-45002 - ERROR: Non è possibile registare un dipendente come trasferito se prima non è stato contrassegnato come da trasferire.
 45003 - ERROR: Employer was not registered as TRASFERITO_A to designed postation.
 45004 - ERROR: Un dipendente non può essere trasferito a una postazione dove è stato già trasferito meno di tre anni fa
