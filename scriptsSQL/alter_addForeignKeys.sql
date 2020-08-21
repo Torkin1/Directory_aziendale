@@ -2,7 +2,7 @@
 
 alter table directory_aziendale.POSTAZIONE
 	add constraint Ufficio_FK 
-    foreign key (NumUfficio, NumPiano, IndirizzoEdificio) references UFFICIO_FISICO (Numero, NumPiano, IndirizzoEdificio)
+    foreign key (CodiceUfficio, NumPiano, IndirizzoEdificio) references UFFICIO_FISICO (Codice, NumPiano, IndirizzoEdificio)
     on update cascade
     on delete cascade;
 
