@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `directory_aziendale`.`UFFICIO_FISICO` (
-  `NomeMansione` VARCHAR(45) NOT NULL,
-  `NomeSettore` VARCHAR(45) NOT NULL,
+  `NomeMansione` VARCHAR(45),
+  `NomeSettore` VARCHAR(45),
   Codice varchar(45) ,
   `NumPiano` INT unsigned NOT NULL,
   `IndirizzoEdificio` VARCHAR(45) NOT NULL,
