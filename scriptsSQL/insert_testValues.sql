@@ -19,6 +19,8 @@ insert into directory_aziendale.DIPENDENTE values ("BGNXNS34P02B229F", "Gerry", 
 insert into directory_aziendale.DIPENDENTE values ("FQFZPK35T45L146X", "Gandalf", "Il Grigio", null, null, null, null, null, null);
 insert into directory_aziendale.DIPENDENTE values ("BHZDND52E64F784E", "Pagan", "Min", null, null, null, null, null, null);
 insert into directory_aziendale.DIPENDENTE values ("SLYZMS53P67E762A", "Fiammetta", "Cicogna", null, null, null, null, null, null);
+insert into directory_aziendale.DIPENDENTE values ("DFPOOU82M67G482U", "Gigi", "D'Alessio", null, null, null, null, null, null);
+call cambiaMansioneDipendente("DFPOOU82M67G482U", "reclami", "Servizio Clienti");
 
 insert into directory_aziendale.TRASFERITO_A values ("TXHTGD97E65H851W", "3313747567", curdate());
 
