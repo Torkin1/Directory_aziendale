@@ -20,6 +20,7 @@ insert into directory_aziendale.DIPENDENTE values ("FQFZPK35T45L146X", "Gandalf"
 insert into directory_aziendale.DIPENDENTE values ("BHZDND52E64F784E", "Pagan", "Min", null, null, null, null, null, null);
 insert into directory_aziendale.DIPENDENTE values ("SLYZMS53P67E762A", "Fiammetta", "Cicogna", null, null, null, null, null, null);
 insert into directory_aziendale.DIPENDENTE values ("DFPOOU82M67G482U", "Gigi", "D'Alessio", null, null, null, null, null, null);
+insert into directory_aziendale.DIPENDENTE values ("ZHNBDB29C66F457F", "Paolo", "The Second", null, null, null, null, null, null);
 call cambiaMansioneDipendente("DFPOOU82M67G482U", "reclami", "Servizio Clienti");
 
 insert into directory_aziendale.TRASFERITO_A values ("TXHTGD97E65H851W", "3313747567", curdate());
@@ -32,4 +33,8 @@ insert into DA_TRASFERIRE_A values ("BHZDND52E64F784E", "reclami", "servizio cli
 insert into DA_TRASFERIRE_A values ("SLYZMS53P67E762A", "calcolo stipendi", "contabilità");
 call generaReportDaTrasferire();
 
-insert into TRASFERITO_A values ("LNYRYM72A08Z327C", "1230987654", curdate());
+insert into TRASFERITO_A values ("LNYRYM72A08Z327C", "1230987654", curdate(), "calcolo bilancio", "contabilità");
+insert into TRASFERITO_A values ("TXHTGD97E65H851W", "3313747567", curdate(), "calcolo bilancio", "contabilità");
+call elencaTrasferimentiDipendente("LNYRYM72A08Z327C");
+
+call ricercaDipendente("Gerry", "scotti");
