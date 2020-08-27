@@ -12,6 +12,8 @@ insert into directory_aziendale.UFFICIO_FISICO values ("calcolo bilancio", "cont
 
 insert into POSTAZIONE values ("3313747567", "0003-01", "0003", 0, "via dei test, 55");
 insert into POSTAZIONE values ("1230987654", "0003-02", "0003", "0", "via dei test, 55");
+insert into POSTAZIONE values ("2536485834", "0003-03", "0003", "0", "via dei test, 55");
+insert into POSTAZIONE values ("1234525234", "0003-04", "0003", "0", "via dei test, 55");
 
 insert into directory_aziendale.DIPENDENTE values ("TXHTGD97E65H851W", "Paolo", "Bonolis", null, null, null, null, "3313747567", curdate());
 insert into directory_aziendale.DIPENDENTE values ("LNYRYM72A08Z327C", "Luca", "Laurenti", null, null, null, null, null, null);
@@ -37,4 +39,6 @@ insert into TRASFERITO_A values ("LNYRYM72A08Z327C", "1230987654", curdate(), "c
 insert into TRASFERITO_A values ("TXHTGD97E65H851W", "3313747567", curdate(), "calcolo bilancio", "contabilità");
 call elencaTrasferimentiDipendente("LNYRYM72A08Z327C");
 
-call ricercaDipendente("Gerry", "scotti");
+call ricercaDipendente("Paolo", null);
+call ricercaPerNumeroTelefono("2536485834");
+call trovaUfficiConPostazioneVuota(null, null)
