@@ -42,4 +42,5 @@ call elencaTrasferimentiDipendente("LNYRYM72A08Z327C");
 
 call ricercaDipendente("Paolo", null);
 call ricercaPerNumeroTelefono("2536485834");
-call trovaUfficiConPostazioneVuota(null, null)
+call trovaUfficiConPostazioneVuota(null, null);
+call trovaDipendentiScambiabili("ZHNBDB29C66F457F");
