@@ -24,6 +24,7 @@ insert into directory_aziendale.DIPENDENTE values ("SLYZMS53P67E762A", "Fiammett
 insert into directory_aziendale.DIPENDENTE values ("DFPOOU82M67G482U", "Gigi", "D'Alessio", null, null, null, null, null, null);
 insert into directory_aziendale.DIPENDENTE values ("ZHNBDB29C66F457F", "Paolo", "The Second", null, null, null, null, null, null);
 call cambiaMansioneDipendente("DFPOOU82M67G482U", "reclami", "Servizio Clienti");
+call assumiDipendente("HMFMUO92S01A827B", "Diletta", "Leotta", null, null, null, null, "calcolo stipendi", "contabilità");
 
 insert into directory_aziendale.TRASFERITO_A values ("TXHTGD97E65H851W", "3313747567", curdate());
 
