@@ -34,7 +34,6 @@ BEGIN
     end if;
     -- scambia i dipendenti e aggiorna la tabella TRASFERITO_A atomicamente
     start transaction;
-    -- scambia dipendenti
 	set tempNumeroTelefonico1 = (select NumTelefonicoEsternoPostazione from DIPENDENTE where CF = cfDipendente1);
 	set tempNumeroTelefonico2 = (select NumTelefonicoEsternoPostazione from DIPENDENTE where CF = cfDipendente2);
     update DIPENDENTE set NumTelefonicoEsternoPostazione = null where CF = cfDipendente1;
