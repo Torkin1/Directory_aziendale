@@ -15,26 +15,9 @@ BEGIN
         resignal;
 	end;
     -- controlla se le due postazioni appartengono ad uffici fisici assegnati alla stessa mansione e settore, che verranno salvati dentro delle variabili
-    select u1.NomeMansione, u1.NomeSettore
-		from DIPENDENTE as d1 join POSTAZIONE as p1 on d1.NumTelefonicoEsternoPostazione = p1.NumTelefonicoEsterno
-            join UFFICIO_FISICO as u1 on p1.CodiceUfficio = u1.Codice
-				and p1.NumPiano = u1.NumPiano
-				and p1.IndirizzoEdificio = u1.IndirizzoEdificio
-		where d1.CF = cfDipendente1
-        and (u1.NomeMansione, u1.NomeSettore) = (
-			select u2.NomeMansione, u2.NomeSettore
-            from DIPENDENTE as d2 join POSTAZIONE as p2 on d2.NumTelefonicoEsternoPostazione = p2.NumTelefonicoEsterno 
-				join UFFICIO_FISICO as u2 on p2.CodiceUfficio = u2.Codice
-					and p2.NumPiano = u2.NumPiano
-					and p2.IndirizzoEdificio = u2.IndirizzoEdificio
-			where d2.CF = cfDipendente2
-		) into tempNomeMansione, tempNomeSettore;
-	if (tempNomeMansione is null and tempNomeSettore is null) 
-		then signal sqlstate "45005" set message_text = "ERROR: Le postazioni occupate dai dipendenti forniti appartengono ad uffici fisici che sono attualmente assegnati a due mansioni diverse.";
-    end if;
+    call checkDipendentiStessaMansione(cfDipendente1, cfDipendente2, tempNomeMansione, tempNomeSettore);
     -- scambia i dipendenti e aggiorna la tabella TRASFERITO_A atomicamente
     start transaction;
-    -- scambia dipendenti
 	set tempNumeroTelefonico1 = (select NumTelefonicoEsternoPostazione from DIPENDENTE where CF = cfDipendente1);
 	set tempNumeroTelefonico2 = (select NumTelefonicoEsternoPostazione from DIPENDENTE where CF = cfDipendente2);
     update DIPENDENTE set NumTelefonicoEsternoPostazione = null where CF = cfDipendente1;
