@@ -1,4 +1,6 @@
 45001 - ERROR: invalid Email format, a compliant one is username@hostname.domain
+45002 - ERROR: provided seat is not empty
 45003 - ERROR: Can't find a transfer of this employer in TRASFERITO_A to designed postation with provided date.
 45004 - ERROR: Un dipendente non può essere trasferito a una postazione dove è stato già trasferito meno di tre anni fa
 45005 - ERROR: Le due postazioni appartengono ad uffici fisici che sono attualmente assegnati a due mansioni diverse.
+45006 - ERROR: provided employer is not registered to be transferred to the job assigned to the physical office which contains the seat
