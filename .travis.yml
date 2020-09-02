@@ -7,5 +7,5 @@ before-install:
 compiler:
     - gcc
 script:
-    - cd client
-    - make -d all
+    - cd client/bin
+    - make -d
