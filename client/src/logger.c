@@ -8,5 +8,6 @@ const char* getStringFromTag(enum Tag tag){
 }
 
 void logMsg(enum Tag tag, char* msg){
-    printf("[%s] %s\n", getStringFromTag(tag), msg);
+    fprintf(stdout, "[%s] %s\n", getStringFromTag(tag), msg);
+    fflush(stdout);
 }

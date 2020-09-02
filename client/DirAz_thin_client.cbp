@@ -3,17 +3,29 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="DirAz_thin_client" />
+		<Option makefile_is_custom="1" />
+		<Option execution_dir="src" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/DirAz_thin_client" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/debug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="dipendente" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
+				<MakeCommands>
+					<Build command="$make -f $makefile all" />
+					<CompileFile command="$make -f $makefile $file" />
+					<Clean command="$make -f $makefile clean$target" />
+					<DistClean command="$make -f $makefile distclean$target" />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile all &gt; $(CMD_NULL)" />
+				</MakeCommands>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/DirAz_thin_client" prefix_auto="1" extension_auto="1" />
@@ -31,9 +43,22 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="main.c">
+		<Unit filename="src/Makefile" />
+		<Unit filename="src/controller.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/controller.h" />
+		<Unit filename="src/logger.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/logger.h" />
+		<Unit filename="src/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/passwordAsker.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/passwordAsker.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />
