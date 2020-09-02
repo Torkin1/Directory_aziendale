@@ -3,7 +3,7 @@ before-install:
     - wget "https://dev.mysql.com/get/mysql-apt-config_0.8.15-1_all.deb"
     - sudo apt-get update -q
     - sudo apt-get install ./mysql-apt-config_0.8.15-1_all.deb
-    - sudo apt-get install mysql libmariadb-dev libmysqlclient libmysqlclient-dev -y
+    - sudo apt-get install libmysqlclient-dev -y
 compiler:
     - gcc
 script:
