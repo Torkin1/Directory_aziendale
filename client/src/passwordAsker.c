@@ -14,7 +14,7 @@ static struct termios oldTermConf;
 int restoreEchoing(){
     if (tcsetattr(fileno(stdin), TCSANOW, &oldTermConf)){
         int err = errno;
-        logMsg(E, strerror(err));
+        logMsg(E, "tctsetattr: %s\n", strerror(err));
         return 1;
     }
     return 0;
@@ -23,7 +23,7 @@ int restoreEchoing(){
 void handler(int sig){
     if (sig == SIGINT){
         if (restoreEchoing()){
-            logMsg(E, "can't restore term");
+            logMsg(E, "can't restore term\n");
             exit(EXIT_FAILURE);
         }
     exit(EXIT_SUCCESS);
@@ -36,7 +36,7 @@ int disableEchoing(){
     // save current terminal conf
     if (tcgetattr(fileno(stdin), &oldTermConf)){
         int err = errno;
-        logMsg(E, strerror(err));
+        logMsg(E, "tcgetattr: %s\n", strerror(err));
         return 1;
     }
     // Sets an handler for SIGINT
@@ -45,7 +45,7 @@ int disableEchoing(){
     sa_sigint.sa_handler = handler;
     if (sigaction(SIGINT, &sa_sigint, NULL) < 0){
         int err = errno;
-        logMsg(E, strerror(err));
+        logMsg(E, "sigaction: %s\n", strerror(err));
         return 1;
     }
     // Sets terminal conf to obfuscate password
@@ -53,7 +53,7 @@ int disableEchoing(){
     newTermConf.c_lflag &= ~ECHO;
     if (tcsetattr(fileno(stdin), TCSANOW, &newTermConf)){
         int err = errno;
-        logMsg(E, strerror(err));
+        logMsg(E, "tcsetattr: %s\n", strerror(err));
         return 1;
     }
     return 0;
@@ -62,22 +62,23 @@ int disableEchoing(){
 int askPassword(char** passwd){
 
     // prompts user to type password
-    logMsg(I, "Please enter password:");
+    logMsg(I, "Please enter password:\n");
     // sets term in non-echoing mode
     if (disableEchoing()){
-        logMsg(E, "failed to set term in non-echoing mode");
+        logMsg(E, "failed to set term in non-echoing mode\n");
         return 1;
     }
     // collects user password
     if(scanf("%ms[^;-#`$|\n]", passwd) != 1){
-        logMsg(E, "Error while reading password");
+        int err = errno;
+        logMsg(E, "scanf: %s\n", strerror(err));
         int c;
         while((c = getchar()) != '\n' && c != EOF);
         return 1;
     }
     // sets term in echoing mode
     if (restoreEchoing()){
-        logMsg(E, "failed to set term in echoing mode");
+        logMsg(E, "failed to set term in echoing mode\n");
         return 1;
     }
     return 0;
