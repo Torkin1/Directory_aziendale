@@ -16,9 +16,12 @@ void logMsg(enum Tag tag, const char* format, ...){
     va_list ap;
     va_start(ap, format);
 
+    // Inserts tag on first half of log msg
     snprintf(buf, sizeof(char) * MSG_MAX_LEN, "[%s] ", getStringFromTag(tag));
+    // concats format to log msg
     firstHalfLen = strlen(buf);
     vsnprintf(buf + firstHalfLen, MSG_MAX_LEN - firstHalfLen, format, ap);
+    // Prints log msg on stdout
     fprintf(stdout, buf, getStringFromTag(tag), format);
     fflush(stdout);
     va_end(ap);

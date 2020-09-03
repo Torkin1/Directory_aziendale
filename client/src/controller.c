@@ -4,26 +4,20 @@
 
 #include "controller.h"
 #include "logger.h"
-#include "passwordAsker.h"
 
 #define settingsPath "settings"
 
-int connectToDB(char *username, MYSQL* conn, bool IsPasswordRequired){
-    char *passwd = NULL;
+char *users[] = {"dip", "dipSetSpazi", "dipSetAmm", "man"};
+char op;
 
-    // Initialize variables
+int connectToDB(char *username, char* passwd, MYSQL* conn){
+    // Initialize connection
     if ((conn = mysql_init(NULL)) == NULL){
         int err = errno;
-        logMsg(E, strerror(err));
+        logMsg(E, "mysql_init: %s\n", strerror(err));
         return 1;
     }
     mysql_options(conn, MYSQL_READ_DEFAULT_FILE, settingsPath);
-    // asks for password
-
-    if (IsPasswordRequired && askPassword(&passwd)){
-        logMsg(E, "failed to collect password\n");
-        return 1;
-    }
     // Tries to connect with db. NULL values are read from settings file
     if ((mysql_real_connect(conn,
                         NULL, // host name
@@ -38,7 +32,3 @@ int connectToDB(char *username, MYSQL* conn, bool IsPasswordRequired){
     }
     return 0;
 }
-
-//int getAvailableOperations(char* username){
-//
-//}

@@ -4,7 +4,5 @@
 #include <mysql.h>
 #include <stdbool.h>
 
-int connectToDB(char *username,  MYSQL *conn, bool isPasswordRequired);
-int getAvailableOperations(char *username);
-
+int connectToDB(char *username, char* passwd, MYSQL *conn);
 #endif // CONTROLLER_H_INCLUDED
