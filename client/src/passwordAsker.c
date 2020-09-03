@@ -62,7 +62,7 @@ int disableEchoing(){
 int askPassword(char** passwd){
 
     // prompts user to type password
-    logMsg(I, "Please enter password (if blank just enter a whitespace). Chars not allowed: ;-#`$|");
+    logMsg(I, "Please enter password:");
     // sets term in non-echoing mode
     if (disableEchoing()){
         logMsg(E, "failed to set term in non-echoing mode");
@@ -71,7 +71,6 @@ int askPassword(char** passwd){
     // collects user password
     if(scanf("%ms[^;-#`$|\n]", passwd) != 1){
         logMsg(E, "Error while reading password");
-        fflush(stdin);
         int c;
         while((c = getchar()) != '\n' && c != EOF);
         return 1;

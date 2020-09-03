@@ -3,6 +3,6 @@
 
 #include <mysql.h>
 
-int connectToDB(char *username, MYSQL *conn);
+int connectToDB(char *username,  MYSQL *conn, bool isPasswordRequired);
 
 #endif // CONTROLLER_H_INCLUDED

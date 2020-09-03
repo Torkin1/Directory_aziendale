@@ -1,4 +1,3 @@
-// #include <sys/socket.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,16 +8,10 @@
 
 #define settingsPath "settings"
 
-int connectToDB(char *username, MYSQL* conn){
-//    int sd;
-    char *passwd;
+int connectToDB(char *username, MYSQL* conn, bool IsPasswordRequired){
+    char *passwd = NULL;
 
     // Initialize variables
-/*    if (sd = socket(AF_UNIX, SOCK_STREAM, 0) < 3){
-        logMsg(E, "Can't create socket");
-        return 1;
-    }
-    */
     if ((conn = mysql_init(NULL)) == NULL){
         int err = errno;
         logMsg(E, strerror(err));
@@ -26,7 +19,8 @@ int connectToDB(char *username, MYSQL* conn){
     }
     mysql_options(conn, MYSQL_READ_DEFAULT_FILE, settingsPath);
     // asks for password
-    if (askPassword(&passwd)){
+
+    if (IsPasswordRequired && askPassword(&passwd)){
         logMsg(E, "failed to collect password");
         return 1;
     }
