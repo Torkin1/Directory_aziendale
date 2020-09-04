@@ -83,3 +83,11 @@ int askPassword(char** passwd){
     }
     return 0;
 }
+
+void disposePassword(char* password){
+    // more actions could be taken to securely dispose of the password
+    int passLen = strlen(password);
+    memset(password, 0, passLen);
+    // password must be disposed coerently to the collecting method used in askPassword (for istance, if scanf("%ms") is used function free() must be called)
+    free(password);
+}

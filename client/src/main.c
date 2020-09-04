@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <stdbool.h>
 // Custom headers
 #include "logger.h"
 #include "controller.h"
@@ -11,41 +12,24 @@
 // Macros
 #define SHORT_OPTS ""
 
-int countOperations(const char* operations[]){
-    int count = 0;
-    for (int i = 0; operations[i] != NULL; i ++){
-        count ++;
+void printOps(){
+    logMsg(I, "Here is a list of supported opStrings. Please note that You must have the correct privileges for an operation in order to execute it. For executing an operation, write it in the format: opName [arg0, ...]\n");
+    for (enum opCode c = op1; c < NUM_OPS; c ++){
+        logMsg(I, "%s(%s)\n", getOpName(c), getOpParams(c));
     }
-    return count;
-}
-
-void printOps(const char* operations[]){
-
 }
 
 int main(int argc, char* argv[]){
     // variables
     int opt, connResult;
     int isPasswordRequired = 1;
+//    char *input;
     char *passwd = NULL;
     MYSQL conn;
     // Constants
     const struct option longOptions[] = {
         {"nopasswd", no_argument, &isPasswordRequired, 0},
         {0, 0, 0, 0}
-    };
-    const char *operations[] = {  // operations are described with their name following their parameters divided by space
-        "generaReportDaTrasferire",
-        "trovaDipendentiScambiabili cfDipendente",
-        "scambiaDipendenti cfDipendente1, cfDipendente2",
-        "trovaUfficiConPostazioneVuota nomeMansione, nomeSettore",
-        "assegnaDipendenteAPostazioneVuota cfDipendente, numTelefonicoEsternoPostazioneVuota",
-        "cambiaMansioneDipendente cfDipendente, nomeNuovaMansione, nomeNuovoSettore",
-        "elencaTrasferimentiDipendente cfDipendente",
-        "ricercaDipendente nome, cognome",
-        "ricercaPerNumeroTelefono numTelefonoEsterno",
-        "assumiDipendente cf, nome, cognome, luogoNascita, dataNascita, emailPersonale, indirizzoResidenza, nomeMansione, nomeSettore",
-        NULL
     };
 
     // greets user
@@ -72,22 +56,13 @@ int main(int argc, char* argv[]){
                 exit(EXIT_FAILURE);
             }
         }
+        disposePassword(passwd);
     } while (connResult);
-    // passwordAsker allocates passwd dinamically (TODO: move this in a wrapper in passwordAsker)
-    free(passwd);
     logMsg(I, "Succesfully logged in as %s\n", argv[optind]);
-    // lists available options (TODO: mov this inside printOptions)
-    logMsg(I, "Here is a list of supported operations. Please note that You must have the correct privileges for an operation in order to execute it. For executing an operation, write it in the format: opName [arg0, ...]\n");
-    int numOfOps = countOperations(operations);
-    for (int i = 0; i < numOfOps; i ++){
-        char *opName, *paramList;
-        int opLen = strlen(operations[i]);
-        char buf[opLen];
-
-        strcpy(buf, operations[i]);
-        opName = strtok(buf, " ");
-        paramList = (strtok(NULL, " ") == NULL)? "" : operations[i] + strlen(opName) + 1;
-        logMsg(I, "%s(%s)\n", opName, paramList);
-    }
+    // lists available options
+    printOps();
     // TODO: collects user's choice
+//    if (scanf("%ms[^\n]", &input) != 1){
+//
+//    }
 }
