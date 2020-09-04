@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <stdbool.h>
+#include <errno.h>
 // Custom headers
 #include "logger.h"
 #include "controller.h"
@@ -23,7 +24,6 @@ int main(int argc, char* argv[]){
     // variables
     int opt, connResult;
     int isPasswordRequired = 1;
-//    char *input;
     char *passwd = NULL;
     MYSQL conn;
     // Constants
@@ -46,7 +46,6 @@ int main(int argc, char* argv[]){
         // asks for password
         if (isPasswordRequired && askPassword(&passwd)){
             logMsg(E, "failed to collect password\n");
-            return 1;
         }
         // connects to db
         connResult = connectToDB(argv[optind], passwd, &conn);
@@ -61,8 +60,28 @@ int main(int argc, char* argv[]){
     logMsg(I, "Succesfully logged in as %s\n", argv[optind]);
     // lists available options
     printOps();
-    // TODO: collects user's choice
-//    if (scanf("%ms[^\n]", &input) != 1){
-//
-//    }
+    char *input, *opName, *opArgs;
+    size_t inputLen;
+    int c;
+    while (true){
+        // collects user's choice
+        logMsg(I, "Type here:\n");
+        input = NULL;
+        inputLen = 0;
+        while (scanf("%m[^\n]", &input) != 1){
+            int err = errno;
+            logMsg(E, "scanf: %s\n", strerror(err));
+        }
+        while ((c = getchar()) != '\n' && c != EOF);
+        opName = strtok(input, " ");
+        // TODO: finds op with same name and args as of input
+        char* currentArg;
+        int i;
+        for (i = 0, currentArg = strtok(NULL, " "); currentArg != NULL; i ++, currentArg = strtok(NULL, " ")){
+            logMsg(D, "arg %d: %s\n", i, currentArg);
+        }
+        free(input);
+        // TODO: calls mathed op
+        // TODO: dipslays results
+    }
 }

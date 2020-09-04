@@ -72,10 +72,10 @@ int askPassword(char** passwd){
     if(scanf("%ms[^;-#`$|\n]", passwd) != 1){
         int err = errno;
         logMsg(E, "scanf: %s\n", strerror(err));
-        int c;
-        while((c = getchar()) != '\n' && c != EOF);
         return 1;
     }
+    int c;
+    while((c = getchar()) != '\n' && c != EOF);
     // sets term in echoing mode
     if (restoreEchoing()){
         logMsg(E, "failed to set term in echoing mode\n");
