@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdbool.h>
+#include <mysql_time.h>
 
 #include "controller.h"
 #include "logger.h"
@@ -43,7 +45,7 @@ void initController(){
 
     operations[op2_2].name = "scambiaDipendenti";
     operations[op2_2].params = "cfDipendente1, cfDipendente";
-    operations[op2_2].stmt = "call scambiaDipendenti(?, ?))";
+    operations[op2_2].stmt = "call scambiaDipendenti(?, ?)";
 
     operations[op3_1].name = "trovaUfficiConPostazioneVuota";
     operations[op3_1].params = "nomeMansione, nomeSettore";
@@ -75,7 +77,7 @@ void initController(){
 
 }
 
-int prepareOp(MYSQL *conn, enum opCode op, MYSQL_BIND *inParamCols, MYSQL_STMT **stmtAddr){
+int prepareOp(MYSQL *conn, enum opCode op, MYSQL_STMT **stmtAddr){
     // init stmt
     if ((*stmtAddr = mysql_stmt_init(conn)) == NULL){
         logMsg(E, "mysql_stmt_init: %s\n", mysql_error(conn));
@@ -83,19 +85,20 @@ int prepareOp(MYSQL *conn, enum opCode op, MYSQL_BIND *inParamCols, MYSQL_STMT *
     }
     // prepares stmt
     MYSQL_STMT *stmt = *stmtAddr;
-    if (mysql_stmt_prepare(stmt, operations[op].stmt, strlen(operations[op1].stmt)) != 0){
+    if (mysql_stmt_prepare(stmt, operations[op].stmt, strlen(operations[op].stmt)) != 0){
         logMsg(E, "mysql_stmt_prepare: %s\n", mysql_stmt_error(stmt));
-        return 1;
-    }
-    // binds in params
-    if (inParamCols != NULL && mysql_stmt_bind_param(stmt,inParamCols)){
-        logMsg(E, "mysql_stmt_bind_param: %s\n", mysql_stmt_error(stmt));
         return 1;
     }
     return 0;
 }
 
-int launchOp(MYSQL_STMT *stmt){
+int launchOp(MYSQL_STMT *stmt, MYSQL_BIND *inParams){
+    // bind params
+    if (inParams != NULL && mysql_stmt_bind_param(stmt, inParams)){
+        logMsg(E, "mysql_stmt_bind_param: %s\n", mysql_stmt_error(stmt));
+        return 1;
+    }
+
     // execute statement
     if (mysql_stmt_execute(stmt)){
         logMsg(E, "mysql_stmt_execute: %s\n", mysql_stmt_error(stmt));
@@ -110,51 +113,95 @@ int launchOp(MYSQL_STMT *stmt){
     return 0;
 }
 
-int prepareAndLaunchOp(MYSQL *conn, enum opCode op, MYSQL_BIND *inParamCols, MYSQL_STMT **stmtAddr){
+int prepareAndLaunchOp(MYSQL *conn, enum opCode op, MYSQL_BIND *inParams, MYSQL_STMT **stmtAddr){
     // prepares stmt
-    if (prepareOp(conn, op, inParamCols, stmtAddr)){
-        logMsg(E, "failed to prepare statement");
+    if (prepareOp(conn, op, stmtAddr)){
+        logMsg(E, "failed to prepare statement\n");
         return 1;
     }
     MYSQL_STMT *stmt = *stmtAddr;
     // launches op
-    if (launchOp(stmt)){
-        logMsg(E, "failed to launch statement");
+    if (launchOp(stmt, inParams)){
+        logMsg(E, "failed to launch statement\n");
         return 1;
     }
     return 0;
 }
 
-void printRes(MYSQL_STMT* stmt, MYSQL_RES *metaRes, MYSQL_BIND *resultSetCols){
+int printRes(MYSQL_STMT* stmt, MYSQL_RES *metaRes, MYSQL_BIND *resultSetCols){
     mysql_field_seek(metaRes, 0);
     int resNumCol = mysql_num_fields(metaRes);
-    int width[resNumCol];
-    logMsg(I, "");
+    int width[resNumCol], res;
+    logMsg(I, " )   ");
     for (int c = 0; c < resNumCol; c ++){
         printf("%s%n | ", mysql_fetch_field(metaRes) -> name, width + c);
     }
     printf("\n");
     fflush(stdout);
-    for (int r = 0; r < resNumCol; r ++){
-        int res = mysql_stmt_fetch(stmt);
+    for (int r = 0; ; r ++){
+        if ((res = mysql_stmt_fetch(stmt)) == MYSQL_NO_DATA){
+            break;
+        }
         switch(res) {
             case 1:
                 logMsg(E, "mysql_stmt_fetch: %d\n", mysql_stmt_error(stmt));
                 return 1;
             case MYSQL_DATA_TRUNCATED:
                 logMsg(W, "data truncation occurred\n", r);
-            case MYSQL_NO_DATA:
             case 0:
                 break;
         }
         logMsg(I, "%d) ", r);
         for (int c = 0; c < resNumCol; c ++){
-            printf("%*s | ", width[c], (*(resultSetCols + c) -> is_null)? "NULL" : resultSetCols[c].buffer);
+            switch((resultSetCols + c) -> buffer_type){
+            case MYSQL_TYPE_STRING:
+            case MYSQL_TYPE_VAR_STRING:
+            case MYSQL_TYPE_NEWDECIMAL:
+                printf("%*s | ", width[c], (*((bool *) ((resultSetCols + c) -> is_null)))? "NULL" : (char *) resultSetCols[c].buffer);
+                break;
+            case MYSQL_TYPE_TINY:
+            case MYSQL_TYPE_SHORT:
+            case MYSQL_TYPE_INT24:
+            case MYSQL_TYPE_LONG:
+            case MYSQL_TYPE_LONGLONG:
+                if (*((bool *) ((resultSetCols + c) -> is_null))){
+                    printf("%*s | ", width[c], "NULL");
+                }
+                else {
+                    printf("%*d | ", width[c], *((int *)(resultSetCols[c].buffer)));
+                }
+                break;
+            case MYSQL_TYPE_FLOAT:
+            case MYSQL_TYPE_DOUBLE:
+                if (*((bool *) ((resultSetCols + c) -> is_null))){
+                    printf("%*s | ", width[c], "NULL");
+                }
+                else {
+                    printf("%*f | ", width[c], *((double *)(resultSetCols[c].buffer)));
+                }
+                break;
+            case MYSQL_TYPE_DATE:
+                if (*((bool *) ((resultSetCols + c) -> is_null))){
+                    printf("%s/ ", "NULL");
+                }
+                else {
+                    printf("%d/%d/%d | ",
+                        ((MYSQL_TIME *)(resultSetCols[c].buffer)) -> day,
+                        ((MYSQL_TIME *)(resultSetCols[c].buffer)) -> month,
+                        ((MYSQL_TIME *)(resultSetCols[c].buffer)) -> year
+                    );
+                }
+                break;
+            default:
+                printf("(not supported) | ");
+            }
         }
         printf("\n");
     }
     printf("\n");
     fflush(stdout);
+
+    return 0;
 }
 
 void freeResultSet(MYSQL_BIND *resultSetCols, int resNumCol){
@@ -217,7 +264,7 @@ int callOp1(MYSQL *conn){
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op1, NULL, &stmt)){
-        logMsg(E, "failed to prepare and launch statement");
+        logMsg(E, "failed to prepare and launch statement\n");
         return 1;
     }
 
@@ -227,8 +274,67 @@ int callOp1(MYSQL *conn){
     }
 
     // prints res set;
-    printRes(stmt, metaRes, resSet);
+    if (printRes(stmt, metaRes, resSet)){
+        logMsg(E, "Error while printing results\n");
+        return 1;
+    }
 
+    // discards remaining result sets
+    do {mysql_stmt_free_result(stmt);} while ((hasNext = mysql_stmt_next_result(stmt) == 0));
+    if (hasNext > 0){
+        logMsg(E, "mysql_stmt_next_result: %s\n", mysql_stmt_error(stmt));
+        return 1;
+    }
+
+    // frees memory allocated dinamically
+    freeResultSet(resSet, mysql_num_fields(metaRes));
+    mysql_free_result(metaRes);
+    if (mysql_stmt_close(stmt) != 0){
+        logMsg(E, "mysql_stmt_close: %s\n", mysql_error(conn));
+        return 1;
+    }
+
+    return 0;
+}
+
+int callOp2_1(MYSQL *conn, int numOfArgs, char *cfDipendente){
+    MYSQL_STMT *stmt;
+    MYSQL_BIND *resSet, *inParams;
+    MYSQL_RES *metaRes;
+    int hasNext;
+    unsigned long len;
+
+    // checks input params
+    if (cfDipendente == NULL){
+        logMsg(E, "incorrect number of args\n");
+        return 1;
+    }
+
+    // prepares params
+    len = sizeof(char) * strlen(cfDipendente);
+    inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
+    inParams -> buffer_type = MYSQL_TYPE_STRING;
+    inParams -> buffer = cfDipendente;
+    inParams -> buffer_length = len;
+    inParams -> length = &len;
+
+    // prepare and launches stmt
+    if (prepareAndLaunchOp(conn, op2_1, inParams, &stmt)){
+        logMsg(E, "failed to prepare and launch statement\n");
+        return 1;
+    }
+
+
+    // binds res set
+    if (bindRes(stmt, &resSet, &metaRes) <= 0){
+        logMsg(W, "Either failed to bind a result set or no result set was available to bind\n");
+    }
+
+    // prints res set;
+    if (printRes(stmt, metaRes, resSet)){
+        logMsg(E, "Error while printing results\n");
+        return 1;
+    }
     // discards remaining result sets
     do {mysql_stmt_free_result(stmt);} while ((hasNext = mysql_stmt_next_result(stmt) == 0));
     if (hasNext > 0){
@@ -253,6 +359,9 @@ int callOp(MYSQL *conn, const enum opCode op, char *opArgs){
     switch(op){
         case op1:
             res = callOp1(conn);
+            break;
+        case op2_1:
+            res = callOp2_1(conn, 1, strtok(opArgs, " "));
             break;
         default:
             logMsg(E, "There is no such operation with provided opCode\n");

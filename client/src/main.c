@@ -25,7 +25,6 @@ int main(int argc, char* argv[]){
     int isPasswordRequired = 1;
     char *passwd = NULL;
     MYSQL *conn;
-    MYSQL_BIND inParams;
     // Constants
     const struct option longOptions[] = {
         {"nopasswd", no_argument, &isPasswordRequired, 0},
