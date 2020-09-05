@@ -1,6 +1,6 @@
 #ifndef CONTROLLER_H_INCLUDED
 #define CONTROLLER_H_INCLUDED
-
+#define ARG_DEL " "
 #include <mysql.h>
 
 enum opCode {

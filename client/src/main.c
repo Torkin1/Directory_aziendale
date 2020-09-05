@@ -12,7 +12,6 @@
 #include "passwordAsker.h"
 // Macros
 #define SHORT_OPTS ""
-
 void printOps(){
     logMsg(I, "Here is a list of supported operations. Please note that You must have the correct privileges for an operation in order to execute it. For executing an operation, opCode followed by its arguments (i.e: opCode [arg0, ...])\n");
     for (enum opCode c = op1; c < NUM_OPS; c ++){
@@ -79,7 +78,7 @@ int main(int argc, char* argv[]){
             while ((c = getchar()) != '\n' && c != EOF);
         }
         input[strlen(input) - 1] = '\0';
-        buf = strtok(input, " ");
+        buf = strtok(input, ARG_DEL);
         if (buf != NULL){
             inOpString = buf;
             inOpArgs = input + strlen(inOpString) + 1;
@@ -93,7 +92,12 @@ int main(int argc, char* argv[]){
                 break;
             }
         }
-        callOp(conn, selectedOpCode, inOpArgs);
+        if (callOp(conn, selectedOpCode, inOpArgs)){
+            logMsg(E, "Failed to execute %s\n", inOpString);
+        }
+        else{
+            logMsg(I, "Done!\n");
+        }
         // disposes of user input
         free(input);
     }
