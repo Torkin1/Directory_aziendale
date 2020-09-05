@@ -14,9 +14,9 @@
 #define SHORT_OPTS ""
 
 void printOps(){
-    logMsg(I, "Here is a list of supported opStrings. Please note that You must have the correct privileges for an operation in order to execute it. For executing an operation, write it in the format: opName [arg0, ...]\n");
+    logMsg(I, "Here is a list of supported operations. Please note that You must have the correct privileges for an operation in order to execute it. For executing an operation, opCode followed by its arguments (i.e: opCode [arg0, ...])\n");
     for (enum opCode c = op1; c < NUM_OPS; c ++){
-        logMsg(I, "%s(%s)\n", getOpName(c), getOpParams(c));
+        logMsg(I, "%s: %s(%s)\n", getOpString(c), getOpName(c), getOpParams(c));
     }
 }
 
@@ -25,7 +25,8 @@ int main(int argc, char* argv[]){
     int opt, connResult;
     int isPasswordRequired = 1;
     char *passwd = NULL;
-    MYSQL conn;
+    MYSQL *conn;
+    MYSQL_BIND inParams;
     // Constants
     const struct option longOptions[] = {
         {"nopasswd", no_argument, &isPasswordRequired, 0},
@@ -48,6 +49,7 @@ int main(int argc, char* argv[]){
             logMsg(E, "failed to collect password\n");
         }
         // connects to db
+        initController();
         connResult = connectToDB(argv[optind], passwd, &conn);
         if (connResult){
            logMsg(E, "connection to db failed. Check username and password\n");
@@ -60,28 +62,39 @@ int main(int argc, char* argv[]){
     logMsg(I, "Succesfully logged in as %s\n", argv[optind]);
     // lists available options
     printOps();
-    char *input, *opName, *opArgs;
+    char *input, *buf;
+    char *inOpString = "";
+    char *inOpArgs = "";
     size_t inputLen;
     int c;
+    enum opCode selectedOpCode;
     while (true){
-        // collects user's choice
+        // collects user's input and partially parses it
         logMsg(I, "Type here:\n");
         input = NULL;
         inputLen = 0;
-        while (scanf("%m[^\n]", &input) != 1){
+        while (getline(&input, &inputLen, stdin) < 0){
             int err = errno;
             logMsg(E, "scanf: %s\n", strerror(err));
+            while ((c = getchar()) != '\n' && c != EOF);
         }
-        while ((c = getchar()) != '\n' && c != EOF);
-        opName = strtok(input, " ");
-        // TODO: finds op with same name and args as of input
-        char* currentArg;
-        int i;
-        for (i = 0, currentArg = strtok(NULL, " "); currentArg != NULL; i ++, currentArg = strtok(NULL, " ")){
-            logMsg(D, "arg %d: %s\n", i, currentArg);
+        input[strlen(input) - 1] = '\0';
+        buf = strtok(input, " ");
+        if (buf != NULL){
+            inOpString = buf;
+            inOpArgs = input + strlen(inOpString) + 1;
         }
+
+        // calls matched op. No op could never have NUM_OPS has opCode, so it can be used as a invalid op code too
+        selectedOpCode = NUM_OPS;
+        for (enum opCode op = op1; op < NUM_OPS; op ++){
+            if (strcmp(inOpString, getOpString(op)) == 0){
+                selectedOpCode = op;
+                break;
+            }
+        }
+        callOp(conn, selectedOpCode, inOpArgs);
+        // disposes of user input
         free(input);
-        // TODO: calls mathed op
-        // TODO: dipslays results
     }
 }

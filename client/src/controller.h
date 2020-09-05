@@ -17,7 +17,10 @@ enum opCode {
     NUM_OPS     // must be last
 };
 
-int connectToDB(char *username, char* passwd, MYSQL *conn);
+void initController();   // must be called first
+int connectToDB(char *username, char* passwd, MYSQL **conn);
+int callOp(MYSQL* conn, const enum opCode, char *opArgs);
 const char* getOpName(enum opCode code);
 const char* getOpParams(enum opCode code);
+const char* getOpString(enum opCode code);
 #endif // CONTROLLER_H_INCLUDED
