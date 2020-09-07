@@ -880,16 +880,18 @@ int callOp9(MYSQL *conn, int numOfArgs, char *cf, char *nome, char *cognome, cha
     (inParams + curParam) -> length = len + curParam;
     curParam ++;
 
-    if (dataNascita == NULL){
-        isNull[curParam] = true;
-        inParams -> is_null = isNull + curParam;
+    if ((dataNascita -> year) == 0 || (dataNascita -> month) == 0 || (dataNascita -> day) == 0){
+        // FIXME: Expected: inserting a null date; Actual: [E] mysql_stmt_execute: Incorrect date value: '' for column 'dataNascita' at row 1
+        (inParams + curParam) -> buffer_type = MYSQL_TYPE_NULL;
     }
-    len[curParam] = 0;
+    else{
+    len[curParam] = sizeof(MYSQL_TIME);
     (inParams + curParam) -> buffer_type = MYSQL_TYPE_DATE;
     (inParams + curParam) -> buffer = dataNascita;
     (inParams + curParam) -> buffer_length = len[curParam];
     (inParams + curParam) -> length = len + curParam;
     curParam ++;
+    }
 
     if (emailPersonale == NULL || !strcmp(emailPersonale, ARG_NULL)){
         emailPersonale = "";
@@ -1050,16 +1052,14 @@ int callOp(MYSQL *conn, const enum opCode op, char *opArgs){
             for(int i = 1; i < numOfArgs; i ++){
                 if (i != 4){
                     strArgs[i] = strtok(NULL, ARG_DEL);
-                    logMsg(D, "strArgs[%d] is: %s\n", i, strArgs[i]);
                 } else{
                     strArgs[i] = strtok(NULL, ARG_DEL);
-                    logMsg(D, "bufDate is: %s\n", bufDate);
                 }
             }
             // parses date arguments
+            dateArgs = calloc(1, sizeof(MYSQL_TIME));
             if ((bufDate = strtok(bufDate, ARG_DATE_DEL)) == NULL || !strcmp(bufDate, ARG_NULL)){}
             else {
-                dateArgs = calloc(1, sizeof(MYSQL_TIME));
                 sscanf(bufDate, "%d", &bufNum);
                 dateArgs -> day = bufNum;
                 }
