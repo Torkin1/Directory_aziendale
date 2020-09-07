@@ -302,6 +302,7 @@ int callOp2_1(MYSQL *conn, int numOfArgs, char *cfDipendente){
     MYSQL_BIND *inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
     MYSQL_RES *metaRes;
     int hasNext;
+    int curParam = 0;
     unsigned long len[numOfArgs];
     bool isNull[numOfArgs];
 
@@ -311,14 +312,15 @@ int callOp2_1(MYSQL *conn, int numOfArgs, char *cfDipendente){
 
     if (cfDipendente == NULL || !strcmp(cfDipendente, ARG_NULL)){
         cfDipendente = "";
-        isNull[0] = true;
-        inParams -> is_null = isNull;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[0] = sizeof(char) * strlen(cfDipendente);
-    inParams -> buffer_type = MYSQL_TYPE_STRING;
-    inParams -> buffer = cfDipendente;
-    inParams -> buffer_length = len[0];
-    inParams -> length = len;
+    len[curParam] = sizeof(char) * strlen(cfDipendente);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = cfDipendente;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op2_1, inParams, &stmt)){
@@ -359,6 +361,7 @@ int callOp2_2(MYSQL *conn, int numOfArgs, char *cfDipendente1, char *cfDipendent
     MYSQL_STMT *stmt;
     MYSQL_BIND *inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
     int hasNext;
+    int curParam = 0;
     unsigned long len[numOfArgs];
     bool isNull[numOfArgs];
 
@@ -368,25 +371,27 @@ int callOp2_2(MYSQL *conn, int numOfArgs, char *cfDipendente1, char *cfDipendent
 
     if (cfDipendente1 == NULL || !strcmp(cfDipendente1, ARG_NULL)){
         cfDipendente1 = "";
-        isNull[0] = true;
-        inParams -> is_null = isNull;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[0] = sizeof(char) * strlen(cfDipendente1);
-    inParams -> buffer_type = MYSQL_TYPE_STRING;
-    inParams -> buffer = cfDipendente1;
-    inParams -> buffer_length = len[0];
-    inParams -> length = len;
+    len[curParam] = sizeof(char) * strlen(cfDipendente1);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = cfDipendente1;
+    (inParams + curParam)-> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (cfDipendente2 == NULL || !strcmp(cfDipendente2, ARG_NULL)){
         cfDipendente2 = "";
-        isNull[1] = true;
-        (inParams + 1) -> is_null = isNull + 1;
+        isNull[curParam] = true;
+        (inParams + curParam) -> is_null = isNull + curParam;
     }
-    len[1] = sizeof(char) * strlen(cfDipendente2);
-    (inParams + 1) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 1) -> buffer = cfDipendente2;
-    (inParams+ 1) -> buffer_length = len[1];
-    (inParams + 1) -> length = len + 1;
+    len[curParam] = sizeof(char) * strlen(cfDipendente2);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = cfDipendente2;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op2_2, inParams, &stmt)){
@@ -419,6 +424,7 @@ int callOp3_1(MYSQL *conn, int numOfArgs, char *nomeMansione, char *nomeSettore)
     MYSQL_BIND *inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
     MYSQL_RES *metaRes;
     int hasNext;
+    int curParam = 0;
     unsigned long len[numOfArgs];
     bool isNull[numOfArgs];
 
@@ -428,25 +434,27 @@ int callOp3_1(MYSQL *conn, int numOfArgs, char *nomeMansione, char *nomeSettore)
 
     if (nomeMansione == NULL || !strcmp(nomeMansione, ARG_NULL)){
         nomeMansione = "";
-        isNull[0] = true;
-        inParams -> is_null = isNull;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[0] = sizeof(char) * strlen(nomeMansione);
-    inParams -> buffer_type = MYSQL_TYPE_STRING;
-    inParams -> buffer = nomeMansione;
-    inParams -> buffer_length = len[0];
-    inParams -> length = len;
+    len[curParam] = sizeof(char) * strlen(nomeMansione);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = nomeMansione;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (nomeSettore == NULL || !strcmp(nomeSettore, ARG_NULL)){
         nomeSettore = "";
-        isNull[1] = true;
-        (inParams + 1) -> is_null = isNull + 1;
+        isNull[curParam] = true;
+        (inParams + curParam) -> is_null = isNull + curParam;
     }
-    len[1] = sizeof(char) * strlen(nomeSettore);
-    (inParams + 1) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 1) -> buffer = nomeSettore;
-    (inParams+ 1) -> buffer_length = len[1];
-    (inParams + 1) -> length = len + 1;
+    len[curParam] = sizeof(char) * strlen(nomeSettore);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = nomeSettore;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op3_1, inParams, &stmt)){
@@ -486,10 +494,9 @@ int callOp3_1(MYSQL *conn, int numOfArgs, char *nomeMansione, char *nomeSettore)
 
 int callOp3_2(MYSQL *conn, int numOfArgs, char *cfDipendente, char *numTelefonicoEsternoPostazione){
     MYSQL_STMT *stmt;
-    MYSQL_BIND *resSet;
     MYSQL_BIND *inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
-    MYSQL_RES *metaRes;
     int hasNext;
+    int curParam = 0;
     unsigned long len[numOfArgs];
     bool isNull[numOfArgs];
 
@@ -499,35 +506,32 @@ int callOp3_2(MYSQL *conn, int numOfArgs, char *cfDipendente, char *numTelefonic
 
     if (cfDipendente == NULL || !strcmp(cfDipendente, ARG_NULL)){
         cfDipendente = "";
-        isNull[0] = true;
-        inParams -> is_null = isNull;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[0] = sizeof(char) * strlen(cfDipendente);
-    inParams -> buffer_type = MYSQL_TYPE_STRING;
-    inParams -> buffer = cfDipendente;
-    inParams -> buffer_length = len[0];
-    inParams -> length = len;
+    len[curParam] = sizeof(char) * strlen(cfDipendente);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = cfDipendente;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (numTelefonicoEsternoPostazione == NULL || !strcmp(numTelefonicoEsternoPostazione, ARG_NULL)){
         numTelefonicoEsternoPostazione = "";
-        isNull[1] = true;
-        (inParams + 1) -> is_null = isNull + 1;
+        isNull[curParam] = true;
+        (inParams + curParam) -> is_null = isNull + curParam;
     }
-    len[1] = sizeof(char) * strlen(numTelefonicoEsternoPostazione);
-    (inParams + 1) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 1) -> buffer = numTelefonicoEsternoPostazione;
-    (inParams+ 1) -> buffer_length = len[1];
-    (inParams + 1) -> length = len + 1;
+    len[curParam] = sizeof(char) * strlen(numTelefonicoEsternoPostazione);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = numTelefonicoEsternoPostazione;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op3_2, inParams, &stmt)){
         logMsg(E, "failed to prepare and launch statement\n");
         return 1;
-    }
-
-    // binds res set
-    if (bindRes(stmt, &resSet, &metaRes) <= 0){
-        logMsg(W, "Either failed to bind a result set or no result set was available to bind\n");
     }
 
     // discards remaining result sets
@@ -539,8 +543,6 @@ int callOp3_2(MYSQL *conn, int numOfArgs, char *cfDipendente, char *numTelefonic
 
     // frees memory allocated dinamically
     free(inParams);
-    freeResultSet(resSet, mysql_num_fields(metaRes));
-    mysql_free_result(metaRes);
     if (mysql_stmt_close(stmt) != 0){
         logMsg(E, "mysql_stmt_close: %s\n", mysql_error(conn));
         return 1;
@@ -553,6 +555,7 @@ int callOp4(MYSQL *conn, int numOfArgs, char *cfDipendente, char *nomeNuovaMansi
     MYSQL_STMT *stmt;
     MYSQL_BIND *inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
     int hasNext;
+    int curParam = 0;
     unsigned long len[numOfArgs];
     bool isNull[numOfArgs];
 
@@ -562,36 +565,39 @@ int callOp4(MYSQL *conn, int numOfArgs, char *cfDipendente, char *nomeNuovaMansi
 
     if (cfDipendente == NULL || !strcmp(cfDipendente, ARG_NULL)){
         cfDipendente = "";
-        isNull[0] = true;
-        inParams -> is_null = isNull;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[0] = sizeof(char) * strlen(cfDipendente);
-    inParams -> buffer_type = MYSQL_TYPE_STRING;
-    inParams -> buffer = cfDipendente;
-    inParams -> buffer_length = len[0];
-    inParams -> length = len;
+    len[curParam] = sizeof(char) * strlen(cfDipendente);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = cfDipendente;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (nomeNuovaMansione == NULL || !strcmp(nomeNuovaMansione, ARG_NULL)){
         nomeNuovaMansione = "";
-        isNull[1] = true;
-        (inParams + 1) -> is_null = isNull + 1;
+        isNull[curParam] = true;
+        (inParams + curParam) -> is_null = isNull + curParam;
     }
-    len[1] = sizeof(char) * strlen(nomeNuovaMansione);
-    (inParams + 1) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 1) -> buffer = nomeNuovaMansione;
-    (inParams+ 1) -> buffer_length = len[1];
-    (inParams + 1) -> length = len + 1;
+    len[curParam] = sizeof(char) * strlen(nomeNuovaMansione);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = nomeNuovaMansione;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (nomeNuovoSettore == NULL || !strcmp(nomeNuovoSettore, ARG_NULL)){
         nomeNuovoSettore = "";
-        isNull[1] = true;
-        (inParams + 2) -> is_null = isNull + 2;
+        isNull[curParam] = true;
+        (inParams + curParam) -> is_null = isNull + curParam;
     }
-    len[2] = sizeof(char) * strlen(nomeNuovoSettore);
-    (inParams + 2) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 2) -> buffer = nomeNuovoSettore;
-    (inParams+ 2) -> buffer_length = len[2];
-    (inParams + 2) -> length = len + 2;
+    len[curParam] = sizeof(char) * strlen(nomeNuovoSettore);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = nomeNuovoSettore;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op4, inParams, &stmt)){
@@ -622,6 +628,7 @@ int callOp5(MYSQL *conn, int numOfArgs, char *cfDipendente){
     MYSQL_BIND *inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
     MYSQL_RES *metaRes;
     int hasNext;
+    int curParam = 0;
     unsigned long len[numOfArgs];
     bool isNull[numOfArgs];
 
@@ -631,14 +638,15 @@ int callOp5(MYSQL *conn, int numOfArgs, char *cfDipendente){
 
     if (cfDipendente == NULL || !strcmp(cfDipendente, ARG_NULL)){
         cfDipendente = "";
-        isNull[0] = true;
-        inParams -> is_null = isNull;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[0] = sizeof(char) * strlen(cfDipendente);
-    inParams -> buffer_type = MYSQL_TYPE_STRING;
-    inParams -> buffer = cfDipendente;
-    inParams -> buffer_length = len[0];
-    inParams -> length = len;
+    len[curParam] = sizeof(char) * strlen(cfDipendente);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = cfDipendente;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op5, inParams, &stmt)){
@@ -682,6 +690,7 @@ int callOp6(MYSQL *conn, int numOfArgs, char *nome, char* cognome){
     MYSQL_BIND *inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
     MYSQL_RES *metaRes;
     int hasNext;
+    int curParam = 0;
     unsigned long len[numOfArgs];
     bool isNull[numOfArgs];
 
@@ -693,27 +702,27 @@ int callOp6(MYSQL *conn, int numOfArgs, char *nome, char* cognome){
 
     if (nome == NULL || !strcmp(nome, ARG_NULL)){
         nome = "";
-        isNull[0] = true;
-        inParams -> is_null = isNull;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[0] = sizeof(char) * strlen(nome);
-    inParams -> buffer_type = MYSQL_TYPE_STRING;
-    inParams -> buffer = nome;
-    inParams -> buffer_length = len[0];
-    inParams -> length = len;
-    logMsg(D, "buffer is: %s\n", inParams -> buffer);
+    len[curParam] = sizeof(char) * strlen(nome);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = nome;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (cognome == NULL || !strcmp(cognome, ARG_NULL)){
         cognome = "";
-        isNull[1] = true;
-        (inParams + 1) -> is_null = isNull + 1;
+        isNull[curParam] = true;
+        (inParams + curParam) -> is_null = isNull + curParam;
     }
-    len[1] = sizeof(char) * strlen(cognome);
-    (inParams + 1) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 1) -> buffer = cognome;
-    (inParams+ 1) -> buffer_length = len[1];
-    (inParams + 1) -> length = len + 1;
-    logMsg(D, "buffer is: %s, %d\n", (inParams + 1) -> buffer);
+    len[curParam] = sizeof(char) * strlen(cognome);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = cognome;
+    (inParams+ curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op6, inParams, &stmt)){
@@ -756,6 +765,7 @@ int callOp7(MYSQL *conn, int numOfArgs, char *numTelefonoEsterno){
     MYSQL_BIND *inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
     MYSQL_RES *metaRes;
     int hasNext;
+    int curParam = 0;
     unsigned long len[numOfArgs];
     bool isNull[numOfArgs];
 
@@ -765,14 +775,15 @@ int callOp7(MYSQL *conn, int numOfArgs, char *numTelefonoEsterno){
 
     if (numTelefonoEsterno == NULL || !strcmp(numTelefonoEsterno, ARG_NULL)){
         numTelefonoEsterno = "";
-        isNull[0] = true;
-        inParams -> is_null = isNull;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[0] = sizeof(char) * strlen(numTelefonoEsterno);
-    inParams -> buffer_type = MYSQL_TYPE_STRING;
-    inParams -> buffer = numTelefonoEsterno;
-    inParams -> buffer_length = len[0];
-    inParams -> length = len;
+    len[curParam] = sizeof(char) * strlen(numTelefonoEsterno);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam)-> buffer = numTelefonoEsterno;
+    (inParams + curParam)-> buffer_length = len[curParam];
+    (inParams + curParam)-> length = len + curParam;
+    curParam ++;
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op7, inParams, &stmt)){
@@ -813,6 +824,7 @@ int callOp9(MYSQL *conn, int numOfArgs, char *cf, char *nome, char *cognome, cha
     MYSQL_STMT *stmt;
     MYSQL_BIND *inParams = calloc(numOfArgs, sizeof(MYSQL_BIND));
     int hasNext;
+    int curParam = 0;
     unsigned long len[numOfArgs];
     bool isNull[numOfArgs];
 
@@ -822,101 +834,110 @@ int callOp9(MYSQL *conn, int numOfArgs, char *cf, char *nome, char *cognome, cha
 
     if (cf == NULL || !strcmp(cf, ARG_NULL)){
         cf = "";
-        isNull[0] = true;
-        inParams -> is_null = isNull;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[0] = sizeof(char) * strlen(cf);
-    inParams -> buffer_type = MYSQL_TYPE_STRING;
-    inParams -> buffer = cf;
-    inParams -> buffer_length = len[0];
-    inParams -> length = len;
+    len[curParam] = sizeof(char) * strlen(cf);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = cf;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (nome == NULL || !strcmp(nome, ARG_NULL)){
         nome = "";
-        isNull[1] = true;
-        inParams -> is_null = isNull + 1;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[1] = sizeof(char) * strlen(nome);
-    (inParams + 1) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 1) -> buffer = nome;
-    (inParams + 1) -> buffer_length = len[1];
-    (inParams + 1) -> length = len + 1;
+    len[curParam] = sizeof(char) * strlen(nome);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = nome;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (cognome == NULL || !strcmp(cognome, ARG_NULL)){
         cognome = "";
-        isNull[2] = true;
-        inParams -> is_null = isNull + 2;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[2] = sizeof(char) * strlen(cognome);
-    (inParams + 2) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 2) -> buffer = cognome;
-    (inParams + 2) -> buffer_length = len[2];
-    (inParams + 2) -> length = len + 2;
+    len[curParam] = sizeof(char) * strlen(cognome);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = cognome;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (luogoNascita == NULL || !strcmp(luogoNascita, ARG_NULL)){
         luogoNascita = "";
-        isNull[3] = true;
-        inParams -> is_null = isNull + 3;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[3] = sizeof(char) * strlen(luogoNascita);
-    (inParams + 3) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 3) -> buffer = luogoNascita;
-    (inParams + 3) -> buffer_length = len[3];
-    (inParams + 3) -> length = len + 3;
+    len[curParam] = sizeof(char) * strlen(luogoNascita);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = luogoNascita;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (dataNascita == NULL){
-        isNull[4] = true;
-        inParams -> is_null = isNull + 4;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[4] = 0;
-    (inParams + 4) -> buffer_type = MYSQL_TYPE_DATE;
-    (inParams + 4) -> buffer = dataNascita;
-    (inParams + 4) -> buffer_length = len[4];
-    (inParams + 4) -> length = len + 4;
+    len[curParam] = 0;
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_DATE;
+    (inParams + curParam) -> buffer = dataNascita;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (emailPersonale == NULL || !strcmp(emailPersonale, ARG_NULL)){
         emailPersonale = "";
-        isNull[5] = true;
-        inParams -> is_null = isNull + 5;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[5] = sizeof(char) * strlen(emailPersonale);
-    (inParams + 5) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 5) -> buffer = emailPersonale;
-    (inParams + 5) -> buffer_length = len[5];
-    (inParams + 5) -> length = len + 5;
+    len[curParam] = sizeof(char) * strlen(emailPersonale);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = emailPersonale;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (indirizzoResidenza == NULL || !strcmp(indirizzoResidenza, ARG_NULL)){
         indirizzoResidenza = "";
-        isNull[6] = true;
-        inParams -> is_null = isNull + 6;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[6] = sizeof(char) * strlen(indirizzoResidenza);
-    (inParams + 6) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 6) -> buffer = indirizzoResidenza;
-    (inParams + 6) -> buffer_length = len[6];
-    (inParams + 6) -> length = len + 6;
+    len[curParam] = sizeof(char) * strlen(indirizzoResidenza);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = indirizzoResidenza;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (nomeMansione == NULL || !strcmp(nomeMansione, ARG_NULL)){
         nomeMansione = "";
-        isNull[7] = true;
-        inParams -> is_null = isNull + 7;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[7] = sizeof(char) * strlen(nomeMansione);
-    (inParams + 7) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 7) -> buffer = nomeMansione;
-    (inParams + 7) -> buffer_length = len[7];
-    (inParams + 7) -> length = len + 7;
+    len[curParam] = sizeof(char) * strlen(nomeMansione);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = nomeMansione;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     if (nomeSettore == NULL || !strcmp(nomeSettore, ARG_NULL)){
         nomeSettore = "";
-        isNull[8] = true;
-        inParams -> is_null = isNull + 8;
+        isNull[curParam] = true;
+        inParams -> is_null = isNull + curParam;
     }
-    len[8] = sizeof(char) * strlen(nomeSettore);
-    (inParams + 8) -> buffer_type = MYSQL_TYPE_STRING;
-    (inParams + 8) -> buffer = nomeSettore;
-    (inParams + 8) -> buffer_length = len[8];
-    (inParams + 8) -> length = len + 8;
+    len[curParam] = sizeof(char) * strlen(nomeSettore);
+    (inParams + curParam) -> buffer_type = MYSQL_TYPE_STRING;
+    (inParams + curParam) -> buffer = nomeSettore;
+    (inParams + curParam) -> buffer_length = len[curParam];
+    (inParams + curParam) -> length = len + curParam;
+    curParam ++;
 
     // prepare and launches stmt
     if (prepareAndLaunchOp(conn, op9, inParams, &stmt)){
@@ -978,7 +999,6 @@ int callOp(MYSQL *conn, const enum opCode op, char *opArgs){
             free(strArgs);
             break;
         case op3_2:
-            // FIXME: [E] mysql_stmt_execute: ERROR: provided employer is not registered to be transferred to the job assigned to the physical office which contains the seat
             ;
             numOfArgs = 2;
             strArgs = calloc(numOfArgs, sizeof(char*));
@@ -1032,21 +1052,26 @@ int callOp(MYSQL *conn, const enum opCode op, char *opArgs){
                     strArgs[i] = strtok(NULL, ARG_DEL);
                     logMsg(D, "strArgs[%d] is: %s\n", i, strArgs[i]);
                 } else{
-                    bufDate = strtok(NULL, ARG_DEL);
+                    strArgs[i] = strtok(NULL, ARG_DEL);
                     logMsg(D, "bufDate is: %s\n", bufDate);
                 }
             }
             // parses date arguments
-            if (bufDate == NULL || !strcmp(bufDate, ARG_NULL)){}
+            if ((bufDate = strtok(bufDate, ARG_DATE_DEL)) == NULL || !strcmp(bufDate, ARG_NULL)){}
             else {
                 dateArgs = calloc(1, sizeof(MYSQL_TIME));
-                sscanf(strtok(bufDate, ARG_DATE_DEL), "%d", &bufNum);
+                sscanf(bufDate, "%d", &bufNum);
                 dateArgs -> day = bufNum;
-                sscanf(strtok(NULL, ARG_DATE_DEL), "%d", &bufNum);
+                }
+            if ((bufDate = strtok(NULL, ARG_DATE_DEL)) == NULL || !strcmp(bufDate, ARG_NULL)){}
+            else{
+                sscanf(bufDate, "%d", &bufNum);
                 dateArgs -> month = bufNum;
-                sscanf(strtok(NULL, ARG_DATE_DEL), "%d", &bufNum);
+            }
+            if ((bufDate = strtok(NULL, ARG_DATE_DEL)) == NULL || !strcmp(bufDate, ARG_NULL)){}
+            else{
+                sscanf(bufDate, "%d", &bufNum);
                 dateArgs -> year = bufNum;
-
             }
             res = callOp9(conn, numOfArgs, strArgs[0], strArgs[1], strArgs[2], strArgs[3], dateArgs, strArgs[5], strArgs[6], strArgs[7], strArgs[8]);
             free(strArgs);
