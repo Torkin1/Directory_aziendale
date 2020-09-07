@@ -13,7 +13,7 @@
 // Macros
 #define SHORT_OPTS ""
 void printOps(){
-    logMsg(I, "Here is a list of supported operations. Please note that You must have the correct privileges for an operation in order to execute it. For executing an operation, opCode followed by its arguments (i.e: opCode [arg0, ...])\n");
+    logMsg(I, "Here is a list of supported operations. Please note that You must have the correct privileges for an operation in order to execute it. For executing an operation, type it in the format: opCode[:arg0:arg1 ...]\n");
     for (enum opCode c = op1; c < NUM_OPS; c ++){
         logMsg(I, "%s: %s(%s)\n", getOpString(c), getOpName(c), getOpParams(c));
     }
