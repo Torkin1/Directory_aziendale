@@ -1,3 +1,4 @@
 - `setup.sql`: File di setup utile a istanziare la BD (tranne gli eventi); 
 - `event_op8.sql`: File di setup utile a istanziare l'evento che implementa l'operazione 8;
-- `insert_testValues.sql`: File contenente alcune istruzioni utilizzate per popolare la BD in fase di test delle stored procedures
+- `insert_testValues.sql`: File contenente alcune istruzioni utilizzate per popolare la BD in fase di test delle stored procedures;
+- `oneRunSetup.sql`: File di setup contenente **tutte** le istruzioni per poter istanziare la BD.
