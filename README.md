@@ -1,7 +1,7 @@
 # Directory_aziendale
 
 - `client`: Contiene tutti i files relativi all'implementazione del thin client;
-- `diagram_ER`: Contiene le immagini utilizate nella relazione per raffigurare la stesura del diagramma ER;
+- `diagram_ER`: Contiene le immagini utilizzate nella relazione per raffigurare la stesura del diagramma ER;
 - `scriptsSQL`: Contiene tutti i file di setup utili a istanziare la BD;
 - `credenziali.txt`: Contiene le coppie username, password degli utenti della BD;
 - `directory_aziendale.mwb`: File di modello dello schema directory_aziendale leggibile da MySQL Workbench;
